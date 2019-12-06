@@ -30,6 +30,10 @@ def make_portal_monitor():
     portal_location = os.environ.get("portal_location")
 
     # loop through existing-portal.txt to find all portals
+
+    # can be used to check if monitor exists:
+    #       api.Monitor.get_all()
+
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
@@ -104,15 +108,17 @@ def make_portal_dashboard():
 
     # get all dashboard to see if this dashboard already exists
     # if not, then create dashboard
-    for board in api.Dashboard.get_all():
-        if title != 'Portals - Demo':
-            logging.info('Creating dashboard')
-            api.Dashboard.create(title=title,
-                                 widgets=widgets,
-                                 layout_type=layout_type,
-                                 description=description,
-                                 is_read_only=is_read_only,
-                                 notify_list=notify_list,
-                                 template_variables=template_variables)
-        else:
-            logging.info('Dashboard already exists')
+    if [True for i in api.Dashboard.get_all()['dashboards']
+            if i['title'] == title]:
+        logging.info('Dashboard already exists')
+    else:
+        logging.info('Creating dashboard')
+        api.Dashboard.create(title=title,
+                             widgets=widgets,
+                             layout_type=layout_type,
+                             description=description,
+                             is_read_only=is_read_only,
+                             notify_list=notify_list,
+                             template_variables=template_variables)
+
+make_portal_dashboard()

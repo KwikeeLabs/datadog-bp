@@ -120,7 +120,7 @@ def main():
         logging.error('Failed: Was unable to start the agent.')
 
 
-    ## add function to check if monitor and dashboard already exists
+    ## add function to check monitor already exists
     ## add function to check if existing_portals.txt existing_portals
     ##      and if the links were created successfully
 
