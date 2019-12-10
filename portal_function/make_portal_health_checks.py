@@ -43,7 +43,7 @@ def main():
     # replace the commands below with an env variable
     try:
         logging.info('Trying: Logging in the user to Azure.')
-        os.system('az login --service-principal -u {0} -p {1} --tenant {2}'.format(os.environ.get("azure_u"), format(os.environ.get("azure_p"), format(os.environ.get("azure_tenant")))
+        os.system('az login --service-principal -u {0} -p {1} --tenant {2}'.format(os.environ.get("azure_u"), os.environ.get("azure_p"), os.environ.get("azure_tenant")))
         logging.info('Success: User logged into Azure.')
     except:
         logging.error('Failed: User not able to login to Azure.')
