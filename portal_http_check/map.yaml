@@ -1,0 +1,79 @@
+apiVersion: v1
+data:
+  http-config: "init_config:\ninstances:\n  - name: 'k8es-demo'\n    url: 'https://demo.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n\
+    \  - name: 'k8es-dole'\n    url: 'https://dole.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-pfizer'\n\
+    \    url: 'https://pfizer.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-delmonte'\n    url:\
+    \ 'https://delmonte.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-promotioninmotion'\n\
+    \    url: 'https://promotioninmotion.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-clifbar'\n\
+    \    url: 'https://clifbar.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-gsk'\n    url: 'https://gsk.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n\
+    \  - name: 'k8es-dev'\n    url: 'https://dev.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-postconsumerbrands'\n\
+    \    url: 'https://postconsumerbrands.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-communitycoffee'\n\
+    \    url: 'https://communitycoffee.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-reynolds'\n\
+    \    url: 'https://reynolds.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-sargento'\n    url:\
+    \ 'https://sargento.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-hallmark'\n    url:\
+    \ 'https://hallmark.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-lorealusa'\n    url:\
+    \ 'https://lorealusa.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-riviana'\n    url:\
+    \ 'https://riviana.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-huhtamaki'\n    url:\
+    \ 'https://huhtamaki.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-churchdwight'\n   \
+    \ url: 'https://churchdwight.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-flowersfoods'\n   \
+    \ url: 'https://flowersfoods.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-frenchtransit'\n  \
+    \  url: 'https://frenchtransit.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-beiersdorf'\n    url:\
+    \ 'https://beiersdorf.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-senecafoods'\n    url:\
+    \ 'https://senecafoods.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-barilla'\n    url:\
+    \ 'https://barilla.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-supervalu'\n    url:\
+    \ 'https://supervalu.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-questnutrition'\n \
+    \   url: 'https://questnutrition.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-schwans'\n    url:\
+    \ 'https://schwans.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-pepsi'\n    url: 'https://pepsi.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n\
+    \  - name: 'k8es-chobani'\n    url: 'https://chobani.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n\
+    \  - name: 'k8es-faribaultfoods'\n    url: 'https://faribaultfoods.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n\
+    \  - name: 'k8es-sigma'\n    url: 'https://sigma.kwikeelabs.com/config/'\n   \
+    \ content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  -\
+    \ name: 'k8es-ferrara'\n    url: 'https://ferrara.kwikeelabs.com/config/'\n  \
+    \  content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  -\
+    \ name: 'k8es-biecc'\n    url: 'https://biecc.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-mtolivepickles'\n\
+    \    url: 'https://mtolivepickles.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-purinacanada'\n\
+    \    url: 'https://purinacanada.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-reichelfoods'\n   \
+    \ url: 'https://reichelfoods.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-chameleoncoldbrew'\n\
+    \    url: 'https://chameleoncoldbrew.kwikeelabs.com/config/'\n    content_match:\
+    \ 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-butterball'\n\
+    \    url: 'https://butterball.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-giovannirana'\n   \
+    \ url: 'https://giovannirana.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n\
+    \    headers: {'x-purge-cache': 'true'}\n\n  - name: 'k8es-mzb'\n    url: 'https://mzb.kwikeelabs.com/config/'\n\
+    \    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n"
+kind: ConfigMap
+metadata:
+  name: dd-agent-config
+  namespace: default
