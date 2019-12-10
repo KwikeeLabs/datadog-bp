@@ -3,17 +3,24 @@ import json
 import logging
 import copy
 import yaml
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+import make_portal_func as portal_func
 
 ### READ BEFORE RUNNING ###
 # 1) You must have the azure cli for kubernetes installed on your laptop.
-# 2) You must have deploy.yaml and map.yaml in this folder.  
-# 3) A log file and some text files will be generated 
-# during the run so be prepared for that. 
-# 4) You need to have a file called existing-portals.txt 
+# 2) You must have deploy.yaml and map.yaml in this folder.
+# 3) A log file and some text files will be generated
+# during the run so be prepared for that.
+# 4) You need to have a file called existing-portals.txt
 # that contains the portals already being checked.
 ### END ###
 
 def main():
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
     if os.path.exists('portal_http_check.log'):
             os.remove('portal_http_check.log')
     logging.basicConfig(filename='portal_http_check.log',level=logging.DEBUG)
@@ -21,10 +28,10 @@ def main():
     # replace the strings below with env variables
     instance_string = "\n  - name: 'k8es-xxx'\n    url: 'https://xxx.kwikeelabs.com/config/'\n    content_match: 'header-copy'\n    headers: {'x-purge-cache': 'true'}\n"
 
-    # replace this 
+    # replace this
     try:
         logging.info("Trying: Azure Log In.")
-        os.system("az login --service-principal -u 514af15e-539b-48a5-a98e-802bfcb38049 -p 6G4bHajKx4D1bd9vHqUQIjBLWK3icTomTIP8Bdjq+LI= --tenant 8714a216-0445-4269-b96b-7d84bddb6da1")
+        os.system('az login --service-principal -u {0} -p {1} --tenant {2}'.format(os.environ.get("azure_u"), os.environ.get("azure_p"), os.environ.get("azure_tenant")))
         logging.info("Success: Logged into Azure.")
     except:
         logging.error('Failed: Azure Log In. Exiting.')
@@ -40,7 +47,7 @@ def main():
     except:
         logging.error('Failed: List Portals. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Loading portals.txt as JSON')
         with open('portals.txt', 'r') as f:
@@ -50,7 +57,7 @@ def main():
     except:
         logging.error('Failed: Loading portals.txt as JSON. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Existing Health Checks?')
         if os.path.exists('existing-portals.txt'):
@@ -64,7 +71,7 @@ def main():
     except:
         logging.error('Failed: Unable to get existing Health Checks. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Generate New Config String')
         with open('map.yaml', 'r') as f:
@@ -84,7 +91,7 @@ def main():
     except:
         logging.error('Failed: Did not generate new string. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Change map.yaml and existing-portals.txt')
         with open('map.yaml', 'w') as f:
@@ -104,7 +111,7 @@ def main():
     except:
         logging.error('Failed: Did not change files. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Switch kubectl context.')
         os.system('az aks get-credentials --resource-group kamino --name datadog-5')
@@ -112,7 +119,7 @@ def main():
     except:
         logging.error('Failed: Unable to switch kubectl context. Exiting.')
         return
-    
+
     try:
         logging.info('Trying: Delete existing resources.')
         os.system('kubectl delete configmap dd-agent-config')
@@ -121,7 +128,7 @@ def main():
         logging.info('Sucess: Deleted deploy')
     except:
         logging.error('Failed: Unable to delete resources. Attempting to reset.')
-    
+
     try:
         logging.info('Trying: Recreate configmap')
         os.system('kubectl apply -f map.yaml')
@@ -131,15 +138,22 @@ def main():
         os.system('kubectl apply -f deploy.yaml')
         logging.info('Success: Deploy recreated.')
     except:
-        logging.error('Failed: Unable to recreate kubectl resources') 
+        logging.error('Failed: Unable to recreate kubectl resources')
 
-    
+    try:
+        logging.info('Trying: Create new monitors for each portal')
+        portal_func.make_portal_monitor()
+        logging.info('Success: Monitors created.')
+    except:
+        logging.error('Failed: Was unable to create new monitors')
+
+    try:
+        logging.info('Trying: Create new dashboard for http monitors')
+        portal_func.make_portal_dashboard()
+        logging.info('Success: dashboard created.')
+    except:
+        logging.error('Failed: Was unable to create new dashboard')
+
 
 if __name__ == "__main__":
     main()
-    
-
-
-
-        
-    
