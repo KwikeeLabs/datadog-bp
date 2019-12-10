@@ -11,6 +11,9 @@ def init():
     dotenv_path = join(dirname(__file__), '.env')
     load_dotenv(dotenv_path)
 
+    # logging
+    #logging.basicConfig(filename='make_portal_health_checks.log',level=logging.DEBUG)
+
     # set keys for datadog access
     options = {
         'api_key': os.environ.get("api_key"),
