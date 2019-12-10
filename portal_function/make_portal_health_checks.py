@@ -30,7 +30,7 @@ def main():
     url_string = 'https://xxx.kwikeelabs.com/config/'
     instance_entry = {'name': '', 'url': '', 'headers':
         {'x-purge-cache': 'true'}, 'method': 'get',
-            'content_match': 'Welcome to your brand portal'}
+            'content_match': 'header-copy'}
 
     try:
         logging.info('Trying: Stopping the agent first')
@@ -119,11 +119,6 @@ def main():
     except:
         logging.error('Failed: Was unable to start the agent.')
 
-
-    ## add function to check monitor already exists
-    ## add function to check if existing_portals.txt existing_portals
-    ##      and if the links were created successfully
-
     try:
         logging.info('Trying: Create new monitors for each portal')
         portal_func.make_portal_monitor()
@@ -132,7 +127,7 @@ def main():
         logging.error('Failed: Was unable to create new monitors')
 
     try:
-        logging.info('Trying: Create new dashboard for monitors')
+        logging.info('Trying: Create new dashboard for http monitors')
         portal_func.make_portal_dashboard()
         logging.info('Success: dashboard created.')
     except:
