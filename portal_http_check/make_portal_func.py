@@ -3,6 +3,7 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 import logging
+import math
 
 
 # connect to datadog
@@ -33,7 +34,7 @@ def make_portal_monitor():
 
     # get all the existing monitor names:
     list = [i['name'] for i in api.Monitor.get_all()]
-
+    counter = 1
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
@@ -56,10 +57,10 @@ def make_portal_monitor():
                     "escalation_message": "{0} is still down.".format(Portal_C),
                     "no_data_timeframe": 2
                 }
-
                 tags = [
-                    "portal"
-                ],
+                    "portal",
+                    "section:{0}".format(math.ceil(counter/10))
+                ]
                 # creating monitor
                 api.Monitor.create(
                     type="service check",
@@ -69,6 +70,7 @@ def make_portal_monitor():
                     tags=tags,
                     options=monitor_options
                 )
+                counter += 1
             else:
                 logging.info('Monitor {0} already exists'.format(Portal_C))
         f.close
@@ -80,28 +82,59 @@ def make_portal_dashboard():
     init()
 
     # set variables for creating the dashboard
-    title = 'Portals - Demo'
+    title = 'Portals - Testing'
     widgets = [{
+        "id":0,
         "definition":{
             "type":"manage_status",
             "summary_type":"monitors",
-            "query":"","sort":"status,asc",
+            "query":"tag:(portal)",
+            "sort":"status,asc",
             "count":50,
             "start":0,
-            "display_format":"countsAndList",
+            "display_format":"counts",
             "color_preference":"text",
             "hide_zero_counts":True,
-            "title":"Portal Endpoint",
+            "title":"Portal Endpoints",
             "title_size":"13",
-            "title_align":"left"
+            "title_align":"center"
         },
         "layout":{
-            "x":8,
-            "y":2,
-            "width":87,
-            "height":60
+            "x":0,
+            "y":1,
+            "width":20,
+            "height":10
         }
     }]
+    ## increment id, x, y, tag
+    m_len = len([i['name'] for i in api.Monitor.get_all()])
+    print(m_len)
+    counter = 0
+    for x in range(1, math.ceil(m_len/10)+1):
+        widget_template ={
+            "id":x,
+            "definition":{
+                "type":"manage_status",
+                "summary_type":"monitors",
+                "query":"tag:(section:{0})".format(x),
+                "sort":"status,asc",
+                "count":50,
+                "start":0,
+                "display_format":"list",
+                "color_preference":"text",
+                "hide_zero_counts":True,
+                "title":"Portal Endpoint",
+                "title_size":"13",
+                "title_align":"left"
+                },
+            "layout":{
+                "x":20+x+(x-1)*24,
+                "y":1,
+                "width":24,
+                "height":60
+            }
+        }
+        widgets.append(widget_template)
     layout_type = 'free'
     description = 'A dashboard with BP info.'
     is_read_only = False
@@ -122,3 +155,5 @@ def make_portal_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
+
+make_portal_dashboard()
