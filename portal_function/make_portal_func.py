@@ -11,9 +11,6 @@ def init():
     dotenv_path = join(dirname(__file__), '.env')
     load_dotenv(dotenv_path)
 
-    # logging
-    logging.basicConfig(filename='make_portal_health_checks.log',level=logging.DEBUG)
-
     # set keys for datadog access
     options = {
         'api_key': os.environ.get("api_key"),
@@ -31,43 +28,46 @@ def make_portal_monitor():
 
     # loop through existing-portal.txt to find all portals
 
-    # can be used to check if monitor exists:
-    #       api.Monitor.get_all()
+    # get all the existing monitor names:
+    list = [i['name'] for i in api.Monitor.get_all()]
 
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
             Portal_C = portal.capitalize()
-            # setting variables for monitor
-            monitor_options = {
-                "notify_audit": True,
-                "locked": False,
-                "timeout_h": 0,
-                "silenced": {},
-                "include_tags": True,
-                "thresholds": {
-                    "critical": 2,
-                    "ok": 2
-                },
-                "new_host_delay": 300,
-                "notify_no_data": True,
-                "renotify_interval": 360,
-                "escalation_message": "{0} is still down.".format(Portal_C),
-                "no_data_timeframe": 2
-            }
+            if Portal_C.strip() not in list:
+                # setting variables for monitor
+                monitor_options = {
+                    "notify_audit": True,
+                    "locked": False,
+                    "timeout_h": 0,
+                    "silenced": {},
+                    "include_tags": True,
+                    "thresholds": {
+                        "critical": 2,
+                        "ok": 2
+                    },
+                    "new_host_delay": 300,
+                    "notify_no_data": True,
+                    "renotify_interval": 360,
+                    "escalation_message": "{0} is still down.".format(Portal_C),
+                    "no_data_timeframe": 2
+                }
 
-            tags = [
-                "portal"
-            ],
-            # creating monitor
-            api.Monitor.create(
-                type="service check",
-                query="\"http.can_connect\".over(\"instance:{0}\",\"url:https://{0}.kwikeelabs.com/config/\").by(\"url\").last(3).count_by_status()".format(portal),
-                name="{0}".format(Portal_C),
-                message="Check {0} endpoint.".format(Portal_C),
-                tags=tags,
-                options=monitor_options
-            )
+                tags = [
+                    "portal"
+                ],
+                # creating monitor
+                api.Monitor.create(
+                    type="service check",
+                    query="\"http.can_connect\".over(\"instance:{0}\",\"url:https://{0}.kwikeelabs.com/config/\").by(\"url\").last(3).count_by_status()".format(portal),
+                    name="{0}".format(Portal_C),
+                    message="Check {0} endpoint.".format(Portal_C),
+                    tags=tags,
+                    options=monitor_options
+                )
+            else:
+                logging.info('Monitor {0} already exists'.format(Portal_C))
         f.close
 
 
@@ -75,7 +75,6 @@ def make_portal_monitor():
 def make_portal_dashboard():
     # initialize access to datadog
     init()
-
 
     # set variables for creating the dashboard
     title = 'Portals - Demo'
@@ -120,5 +119,3 @@ def make_portal_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
-
-make_portal_dashboard()
