@@ -67,7 +67,7 @@ def make_portal_monitor():
                 # creating monitor
                 api.Monitor.create(
                     type="service check",
-                    query="\"http.can_connect\".over(\"instance:{0}\",\"url:https://{0}.kwikeelabs.com/config/\").by(\"url\").last(3).count_by_status()".format(portal),
+                    query="\"http.can_connect\".over(\"instance:k8es_{0}\",\"url:https://{0}.kwikeelabs.com/config/\").by(\"url\").last(3).count_by_status()".format(portal),
                     name="{0}".format(Portal_C),
                     message="Check {0} endpoint.".format(Portal_C),
                     tags=tags,
@@ -85,7 +85,7 @@ def make_portal_dashboard():
     init()
 
     # the number of rows per widget
-    widget_row_len = int(os.environ.get("widget_row_length"))
+    widget_row_len = int(os.environ.get("widget_length"))
 
     # set variables for creating the dashboard
     title = 'Portals - Demo'
@@ -114,7 +114,6 @@ def make_portal_dashboard():
     }]
     ## increment id, x, y, tag
     m_len = len([i['name'] for i in api.Monitor.get_all()])
-    print(m_len)
     counter = 0
     for x in range(1, math.ceil(m_len/widget_row_len)+1):
         widget_template ={
@@ -161,3 +160,5 @@ def make_portal_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
+make_portal_monitor()
+make_portal_dashboard()
