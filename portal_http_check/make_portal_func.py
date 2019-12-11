@@ -35,6 +35,7 @@ def make_portal_monitor():
     # get all the existing monitor names:
     list = [i['name'] for i in api.Monitor.get_all()]
     counter = 1
+    widget_row_num = os.environ.get("widget_length")
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
@@ -59,7 +60,7 @@ def make_portal_monitor():
                 }
                 tags = [
                     "portal",
-                    "section:{0}".format(math.ceil(counter/10))
+                    "section:{0}".format(math.ceil(counter/widget_row_num))
                 ]
                 # creating monitor
                 api.Monitor.create(
@@ -82,7 +83,7 @@ def make_portal_dashboard():
     init()
 
     # set variables for creating the dashboard
-    title = 'Portals - Testing'
+    title = 'Portals - Demo'
     widgets = [{
         "id":0,
         "definition":{
@@ -110,7 +111,7 @@ def make_portal_dashboard():
     m_len = len([i['name'] for i in api.Monitor.get_all()])
     print(m_len)
     counter = 0
-    for x in range(1, math.ceil(m_len/10)+1):
+    for x in range(1, math.ceil(m_len/widget_row_num)+1):
         widget_template ={
             "id":x,
             "definition":{
