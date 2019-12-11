@@ -35,7 +35,9 @@ def make_portal_monitor():
     # get all the existing monitor names:
     list = [i['name'] for i in api.Monitor.get_all()]
     counter = 1
-    widget_row_num = os.environ.get("widget_length")
+    # the number of rows per widget
+    widget_row_len = int(os.environ.get("widget_length"))
+
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
@@ -60,7 +62,7 @@ def make_portal_monitor():
                 }
                 tags = [
                     "portal",
-                    "section:{0}".format(math.ceil(counter/widget_row_num))
+                    "section:{0}".format(math.ceil(counter/widget_row_len))
                 ]
                 # creating monitor
                 api.Monitor.create(
@@ -81,6 +83,9 @@ def make_portal_monitor():
 def make_portal_dashboard():
     # initialize access to datadog
     init()
+
+    # the number of rows per widget
+    widget_row_len = int(os.environ.get("widget_row_length"))
 
     # set variables for creating the dashboard
     title = 'Portals - Demo'
@@ -111,7 +116,7 @@ def make_portal_dashboard():
     m_len = len([i['name'] for i in api.Monitor.get_all()])
     print(m_len)
     counter = 0
-    for x in range(1, math.ceil(m_len/widget_row_num)+1):
+    for x in range(1, math.ceil(m_len/widget_row_len)+1):
         widget_template ={
             "id":x,
             "definition":{
