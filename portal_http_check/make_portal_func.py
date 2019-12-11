@@ -161,5 +161,3 @@ def make_portal_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
-
-make_portal_dashboard()
