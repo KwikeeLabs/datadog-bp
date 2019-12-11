@@ -28,9 +28,9 @@ def make_portal_monitor():
     # initialize access to datadog
     init()
 
+    # location of existing-portal.txt
     portal_location = os.environ.get("portal_location")
 
-    # loop through existing-portal.txt to find all portals
 
     # get all the existing monitor names:
     list = [i['name'] for i in api.Monitor.get_all()]
@@ -41,8 +41,8 @@ def make_portal_monitor():
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
         for portal in f:
-            Portal_C = portal.capitalize()
-            if Portal_C.strip() not in list:
+            Portal_C = portal.capitalize().strip()
+            if Portal_C not in list:
                 # setting variables for monitor
                 monitor_options = {
                     "notify_audit": True,
@@ -147,10 +147,21 @@ def make_portal_dashboard():
     template_variables = []
 
     # get all dashboard to see if this dashboard already exists
-    # if not, then create dashboard
-    if [True for i in api.Dashboard.get_all()['dashboards']
-            if i['title'] == title]:
-        logging.info('Dashboard already exists')
+    # if it exists, update the dashboard, else, create new dashboard, 
+    dashboard_id = False
+    for i in api.Dashboard.get_all()['dashboards']:
+        if i['title'] == title:
+            dashboard_id = i['id']
+    if dashboard_id:
+        logging.info('Dashboard already exists, updating dashboard')
+        api.Dashboard.update(dashboard_id,
+                     title=title,
+                     widgets=widgets,
+                     layout_type=layout_type,
+                     description=description,
+                     is_read_only=is_read_only,
+                     notify_list=notify_list,
+                     template_variables=template_variables)
     else:
         logging.info('Creating dashboard')
         api.Dashboard.create(title=title,
@@ -160,5 +171,3 @@ def make_portal_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
-make_portal_monitor()
-make_portal_dashboard()
