@@ -31,7 +31,6 @@ def make_portal_monitor():
     # location of existing-portal.txt
     portal_location = os.environ.get("portal_location")
 
-
     # get all the existing monitor names:
     list = [i['name'] for i in api.Monitor.get_all()]
     counter = 1
@@ -40,7 +39,9 @@ def make_portal_monitor():
 
     # create a monitor for each portal
     with open(portal_location, 'r') as f:
+        # get each portal name
         for portal in f:
+            # strip portal name of extra space and capitalize
             Portal_C = portal.capitalize().strip()
             if Portal_C not in list:
                 # setting variables for monitor
@@ -60,6 +61,8 @@ def make_portal_monitor():
                     "escalation_message": "{0} is still down.".format(Portal_C),
                     "no_data_timeframe": 2
                 }
+                # portal for all portal related Monitors
+                # section number increments depending on length set in .env
                 tags = [
                     "portal",
                     "section:{0}".format(math.ceil(counter/widget_row_len))
@@ -75,6 +78,7 @@ def make_portal_monitor():
                 )
                 counter += 1
             else:
+                # do nothing if monitor already exists
                 logging.info('Monitor {0} already exists'.format(Portal_C))
         f.close
 
@@ -112,7 +116,9 @@ def make_portal_dashboard():
             "height":10
         }
     }]
-    ## increment id, x, y, tag
+    # create a new widget for a certain number of monitors,
+    # depending on widget_row_leng set in .env
+    # increment id, x, y, tag
     m_len = len([i['name'] for i in api.Monitor.get_all()])
     counter = 0
     for x in range(1, math.ceil(m_len/widget_row_len)+1):
@@ -140,19 +146,26 @@ def make_portal_dashboard():
             }
         }
         widgets.append(widget_template)
+    # free = screenboard, ordered = timeboard
     layout_type = 'free'
     description = 'A dashboard with BP info.'
+    # set to False to enable edit, else set to True
     is_read_only = False
+    # include emails for notifying changes to the board
     notify_list = []
+    # global variables to apply to all widgets
     template_variables = []
 
     # get all dashboard to see if this dashboard already exists
-    # if it exists, update the dashboard, else, create new dashboard, 
+    # if it exists, update the dashboard, else, create new dashboard,
     dashboard_id = False
+    ## later, we can create a rule for duplicates, if ever needed
     for i in api.Dashboard.get_all()['dashboards']:
         if i['title'] == title:
+            # if there are duplicates, will update the last
             dashboard_id = i['id']
     if dashboard_id:
+        # if the dashboard already exists, update regardless of anything else
         logging.info('Dashboard already exists, updating dashboard')
         api.Dashboard.update(dashboard_id,
                      title=title,
@@ -163,6 +176,7 @@ def make_portal_dashboard():
                      notify_list=notify_list,
                      template_variables=template_variables)
     else:
+        # create new dashboard
         logging.info('Creating dashboard')
         api.Dashboard.create(title=title,
                              widgets=widgets,

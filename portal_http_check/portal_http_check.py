@@ -141,18 +141,18 @@ def main():
         logging.error('Failed: Unable to recreate kubectl resources')
 
     try:
-        logging.info('Trying: Create new monitors for each portal')
+        logging.info('Trying: Create new portal monitors for each portal')
         portal_func.make_portal_monitor()
         logging.info('Success: Monitors created.')
     except:
-        logging.error('Failed: Was unable to create new monitors')
+        logging.error('Failed: Was unable to create new portal monitors')
 
     try:
-        logging.info('Trying: Create new dashboard for http monitors')
+        logging.info('Trying: Create new portal dashboard for http monitors')
         portal_func.make_portal_dashboard()
         logging.info('Success: dashboard created.')
     except:
-        logging.error('Failed: Was unable to create new dashboard')
+        logging.error('Failed: Was unable to create new portal dashboard')
 
 
 if __name__ == "__main__":
