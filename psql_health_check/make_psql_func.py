@@ -31,160 +31,337 @@ def make_psql_dashboard():
 
     # set variables for creating the dashboard
     title = 'PostgreSQL - Demo'
-    widgets = [{
-            "id":0,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+    widgets = [
+        {
+            "id": 0,
+            "definition": {
+                "type": "query_value",
+                "requests": [
                     {
-                        "q":"avg:postgresql.rows_fetched{$scope}"
+                        "q": "sum:postgresql.rows_fetched{*} \
+                        / ( sum:postgresql.rows_fetched{*} \
+                        + sum:postgresql.rows_returned{*} ) * 100",
+                        "aggregator": "avg"
+                    }
+                ],
+                "title": "Rows fetched / returned",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {
+                    "live_span": "1h"
+                },
+                "autoscale": True,
+                "custom_unit": "%",
+                "precision": 1
+            },
+            "layout": {
+                "x": 2,
+                "y": 1,
+                "width": 22,
+                "height": 15
+            }
+        },
+        {
+            "id": 1,
+            "definition": {
+                "type": "query_value",
+                "requests": [
+                    {
+                        "q": "max:postgresql.percent_usage_connections{*}*100",
+                        "aggregator": "last",
+                        "conditional_formats": [
+                            {
+                                "comparator": ">",
+                                "value": 75,
+                                "palette": "red_on_white"
+                            },
+                            {
+                                "comparator": ">",
+                                "value": 50,
+                                "palette": "yellow_on_white"
+                            },
+                            {
+                                "comparator": "<=",
+                                "value": 50,
+                                "palette": "green_on_white"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Max connections in use",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {
+                    "live_span": "1h"
+                },
+                "autoscale": True,
+                "custom_unit": "%",
+                "precision": 0
+            },
+            "layout": {
+                "x": 25,
+                "y": 1,
+                "width": 23,
+                "height": 15
+            }
+        },
+        {
+            "id": 2,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "q": "avg:postgresql.rows_fetched{*}"
                     },
                     {
-                        "q":"avg:postgresql.rows_returned{$scope}"
+                        "q": "avg:postgresql.rows_returned{*}"
                     },
                     {
-                        "q":"avg:postgresql.rows_inserted{$scope}"
+                        "q": "avg:postgresql.rows_inserted{*}"
                     },
                     {
-                        "q":"avg:postgresql.rows_updated{$scope}"
+                        "q": "avg:postgresql.rows_updated{*}"
                     }
                 ],
-                "title":"Rows fetched / returned / inserted / updated (per sec)",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "Rows fetched / returned / inserted / updated (per sec)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 1,
+                "y": 17,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":1,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 3,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"avg:postgresql.connections{$scope} by {db}"
+                        "q": "avg:postgresql.connections{*} by {db}"
                     }
                 ],
-                "title":"Connections",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "Connections",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 49,
+                "y": 1,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":2,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 4,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"postgresql.rows_inserted{$scope},\
-                        postgresql.rows_deleted{$scope}, \
-                        postgresql.rows_updated{$scope}"
+                        "q": "postgresql.rows_inserted{*}, \
+                        postgresql.rows_deleted{*}, \
+                        postgresql.rows_updated{*}"
                     }
                 ],
-                "title":"Inserts / updates / deletes (per sec)",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "Inserts / updates / deletes (per sec)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 49,
+                "y": 17,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":3,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 5,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"avg:system.io.util{$scope}"
+                        "q": "avg:system.io.util{*}"
                     }
                 ],
-                "title":"Disk utilization (%)",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "Disk utilization (%)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 1,
+                "y": 33,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":4,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 6,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"system.load.1{$scope}"
+                        "q": "avg:system.load.1{*}",
+                        "display_type": "area",
+                        "style": {
+                            "palette": "dog_classic",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        }
                     },
                     {
-                        "q":"system.load.5{$scope}"
+                        "q": "avg:system.load.5{*}",
+                        "display_type": "area",
+                        "style": {
+                            "palette": "dog_classic",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        }
                     },
                     {
-                        "q":"system.load.15{$scope}"
+                        "q": "avg:system.load.15{*}",
+                        "display_type": "area",
+                        "style": {
+                            "palette": "dog_classic",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        }
                     }
                 ],
-                "title":"System load",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "System load",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 49,
+                "y": 33,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":5,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 7,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"system.cpu.idle{$scope},\
-                        system.cpu.system{$scope},\
-                        system.cpu.iowait{$scope},\
-                        system.cpu.user{$scope},\
-                        system.cpu.stolen{$scope},\
-                        system.cpu.guest{$scope}"
+                        "q": "avg:system.cpu.idle{*}, \
+                        avg:system.cpu.system{*}, \
+                        avg:system.cpu.iowait{*}, \
+                        avg:system.cpu.user{*}, \
+                        avg:system.cpu.stolen{*}, \
+                        avg:system.cpu.guest{*}",
+                        "display_type": "area",
+                        "style": {
+                            "palette": "cool",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        }
                     }
                 ],
-                "title":"CPU usage (%)",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "CPU usage (%)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 1,
+                "y": 65,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":6,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 8,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"max:system.cpu.iowait{$scope}"
-                    }
+                        "q": "max:system.cpu.iowait{*}"
+                        }
                 ],
-            "title":"I/O wait (%)",
-            "show_legend":False,
-            "legend_size":"0"}},
-        {
-            "id":7,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
-                    {
-                        "q":"sum:system.mem.usable{$scope},\
-                        sum:system.mem.total{$scope}-sum:system.mem.usable{$scope}"
-                    }
-                ],
-                "title":"System memory",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "I/O wait (%)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 1,
+                "y": 49,
+                "width": 47,
+                "height": 15
             }
         },
         {
-            "id":8,
-            "definition":{
-                "type":"timeseries",
-                "requests":[
+            "id": 9,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
                     {
-                        "q":"sum:system.net.bytes_rcvd{$scope}"
+                        "q": "sum:system.mem.usable{*}, sum:system.mem.total{*}-sum:system.mem.usable{*}",
+                        "display_type": "area",
+                        "style": {
+                            "palette": "cool",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        }
+                    }
+                ],
+                "title": "System memory",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 49,
+                "y": 65,
+                "width": 47,
+                "height": 15
+            }
+        },
+        {
+            "id": 10,
+            "definition": {
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "q": "sum:system.net.bytes_rcvd{*}"
                     },
                     {
-                        "q":"sum:system.net.bytes_sent{$scope}"
+                        "q": "sum:system.net.bytes_sent{*}"
                     }
                 ],
-                "title":"Network traffic (per sec)",
-                "show_legend":False,
-                "legend_size":"0"
+                "title": "Network traffic (per sec)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": False,
+                "legend_size": "0"
+            },
+            "layout": {
+                "x": 49,
+                "y": 49,
+                "width": 47,
+                "height": 15
             }
         }
     ]
 
     # free = screenboard, ordered = timeboard
-    layout_type = 'ordered'
+    layout_type = 'free'
     description = 'A dashboard with PostgreSQL info.'
     # set to False to enable edit, else set to True
     is_read_only = False
@@ -222,4 +399,3 @@ def make_psql_dashboard():
                              is_read_only=is_read_only,
                              notify_list=notify_list,
                              template_variables=template_variables)
-make_psql_dashboard()
