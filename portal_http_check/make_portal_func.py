@@ -72,7 +72,7 @@ def make_portal_monitor():
                     type="service check",
                     query="\"http.can_connect\".over(\"instance:k8es_{0}\",\"url:https://{0}.kwikeelabs.com/config/\").by(\"url\").last(3).count_by_status()".format(portal),
                     name="{0}".format(Portal_C),
-                    message="Check {0} endpoint.".format(Portal_C),
+                    message="Check {0} endpoint. @slack-SGSCO-datadog-test".format(Portal_C),
                     tags=tags,
                     options=monitor_options
                 )
@@ -133,10 +133,7 @@ def make_portal_dashboard():
                 "start":0,
                 "display_format":"list",
                 "color_preference":"text",
-                "hide_zero_counts":True,
-                "title":"Portal Endpoint",
-                "title_size":"13",
-                "title_align":"left"
+                "hide_zero_counts":True
                 },
             "layout":{
                 "x":20+x+(x-1)*24,
